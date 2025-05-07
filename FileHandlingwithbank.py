@@ -228,98 +228,9 @@ def forget_password():
 
 #   ===============================================================================================================    
 
-def manager_Class():
-    print('Wellcome to the manager Function')
-    set_password = 123456
-    while True:
-        try:
-            new_password = int(input('Enter the Pin : '))
-            if set_password == new_password:
-                print('Hi manager welcome to the manager login')
-                for attempt_manager in range(1, 4):  # 3 attempts total
-                    new_password = input(f'Enter your password (attempt {attempt_manager}/3): ').strip()
-                    if set_password == new_password:
-#   Start edit in here ==========================================
-                        print("1. Create Account")
-                        print("7. Calculate Interest")
-                        choice = input("Enter your choice (1-9): ").strip()
-
-                        if choice == '1':
-                            create_account()
-                        elif choice == '7':
-                            calculate_interest()
-
-                        return 1     #  Strat coding in here onawards
-                    else:
-                        print("Incorrect password. Try again.") 
-                print("Too many incorrect attempts. Access denied.")
-                return -1
-            else:
-                print("Re-enter the correct account number.") 
-        except ValueError:
-            print("Invalid account number.")
-
-#   Main Function =================================================================================================
-
-def main_menu():
-    while True:
-        print("\n=== Mini Banking System For our valuable coustermer ===")
-        
-        print("2. Deposit Money")
-        print("3. Withdraw Money")
-        print("4. Check Balance")
-        print("5. Transaction History")
-        print("6. Transfer Money")
-        print("7. Calculate Interest")
-        print("8. Forget the password")
-        
-        print("10. Exit")
-        choice = input("Enter your choice (1-9): ").strip()
-
-        if choice == '1':
-            create_account()
-        elif choice == '2':
-            deposit_money()
-        elif choice == '3':
-            withdraw_money()
-        elif choice == '4':
-            check_balance()
-        elif choice == '5':
-            transaction_history()
-        elif choice == '6':
-            transfer_money()
-        
-        elif choice == '8':
-            forget_password()
-        elif choice == '10':
-            print("Thanks for using the banking system!") 
-            break
-        else:
-            print("Invalid choice. Please enter a number from 1 to 9.")
-
-#   ===============================================================================================================
-
 #   File handling =================================================================================================
 
-# Save data to a text file
-
-def save_data():
-    with open("bank_data.txt", "w") as f:
-        f.write("AccountCounter: " + str(account_counter) + "\n\n")
-        for acc_num, details in accounts.items():
-            f.write('Account Number: ' , str(acc_num))
-            f.write("Name: " + details['name'] + "\n")
-            f.write("Password: " + details['password'] + "\n")
-            f.write("PIN: " + str(details['pin']) + "\n")
-            f.write("Balance: " + str(details['balance']) + "\n")
-            f.write("Password Changes: " + str(details['times_of_password_changed']) + "\n")
-            f.write("Transactions:\n")
-            for txn in details['transactions']:
-                f.write("  - " + txn + "\n")
-            f.write("\n")  # blank line between accounts
-
-
-# Load data from a text file
+#   Load data from a text file ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 def load_data():
     global account_counter
@@ -370,21 +281,109 @@ def load_data():
         with open("bank_data.txt", "w") as f:
             f.write("AccountCounter: 1000\n\n")
 
+#   Save data to a text file ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def save_data():
+    with open("bank_data.txt", "w") as f:
+        f.write("AccountCounter: " + str(account_counter) + "\n\n")
+        for acc_num, details in accounts.items():
+            f.write('Account Number: ' , str(acc_num))
+            f.write("Name: " + details['name'] + "\n")
+            f.write("Password: " + details['password'] + "\n")
+            f.write("PIN: " + str(details['pin']) + "\n")
+            f.write("Balance: " + str(details['balance']) + "\n")
+            f.write("Password Changes: " + str(details['times_of_password_changed']) + "\n")
+            f.write("Transactions:\n")
+            for txn in details['transactions']:
+                f.write("  - " + txn + "\n")
+            f.write("\n")  # blank line between accounts
 
 #   ===============================================================================================================
 
+#   Main Manager class ============================================================================================    
 
+def manager_Class():
+    print("\n=== Mini Banking System For our valuable Manager ===")
+    set_password = 123456
+    while True:
+        try:
+            new_password = int(input('Enter the Pin : '))
+            if set_password == new_password:
+                print('Hi manager welcome to the manager login')
+                for attempt_manager in range(1, 4):  # 3 attempts total
+                    new_password = input(f'Enter your password (attempt {attempt_manager}/3): ').strip()
+                    if set_password == new_password:
+                    #   Start edit in here ==========================================
+                        print("1. Create Account")
+                        print("7. Calculate Interest")
+                        choice = input("Enter your choice (1-9): ").strip()
+
+                        if choice == '1':
+                            create_account()
+                        elif choice == '7':
+                            calculate_interest()
+
+                        return 1     #  Strat coding in here onawards
+                    else:
+                        print("Incorrect password. Try again.") 
+                print("Too many incorrect attempts. Access denied.")
+                return -1
+            else:
+                print("Re-enter the correct account number.") 
+        except ValueError:
+            print("Invalid account number.")
+
+#   ===============================================================================================================    
+
+#   Main Customer class  ==========================================================================================
+
+def main_menu():
+    while True:
+        print("\n=== Mini Banking System For our valuable coustermer ===")
+        
+        print("2. Deposit Money")
+        print("3. Withdraw Money")
+        print("4. Check Balance")
+        print("5. Transaction History")
+        print("6. Transfer Money")
+        print("7. Calculate Interest")
+        print("8. Forget the password")
+        
+        print("10. Exit")
+        choice = input("Enter your choice (1-9): ").strip()
+
+        if choice == '1':
+            create_account()
+        elif choice == '2':
+            deposit_money()
+        elif choice == '3':
+            withdraw_money()
+        elif choice == '4':
+            check_balance()
+        elif choice == '5':
+            transaction_history()
+        elif choice == '6':
+            transfer_money()
+        
+        elif choice == '8':
+            forget_password()
+        elif choice == '10':
+            print("Thanks for using the banking system!") 
+            break
+        else:
+            print("Invalid choice. Please enter a number from 1 to 9.")
+
+#   ===============================================================================================================
 
 #   Login Page ====================================================================================================
 
 def start_Function():
     while True:
         print('========================================================')
-        print('Welcome to the BOC Banking system\n')
-        print('If you are the Customer press 1:')
-        print('If you are the Admin press 2:')
+        print("\n=== Mini Banking System ===")
+        print('If you are the Customer press 1 ,')
+        print('If you are the Admin press 2 ,')
         num_1 = int(input('You want to exit from this loop press 3: '))  
-
         if num_1 == 1:
             main_menu()
         elif num_1 == 2:
@@ -397,12 +396,14 @@ def start_Function():
 
 #   ===============================================================================================================
 
+
 #   Start the function With load the data  ========================================================================
 
 load_data()
 start_Function() 
 
-
-
 #   ===============================================================================================================
 
+#   Updated code 
+
+#   ===============================================================================================================
