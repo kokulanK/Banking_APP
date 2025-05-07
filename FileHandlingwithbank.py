@@ -3,12 +3,15 @@
 #   Unicom Tic
 #   Mini Banking System 
 
+from datetime import datetime
+
 accounts = {}   #  Dictionary to store the account details 
 account_counter = 1000  # Starting account number from 1000
 
 #   Create the account [1. Create Account] ========================================================================
 
 def create_account(): 
+    global accounts
     global account_counter
     name = input("Enter account holder name: ").strip()
     password = input("Set a password for your account: ").strip()
@@ -24,10 +27,11 @@ def create_account():
                     'balance': initial_balance,
                     'times_of_password_changed': 0,
                     'transactions': ["Account created with initial balance: " + str(initial_balance)]
+                 
                 }
                 print("Account created successfully! Your account number is", account_counter)
-                account_counter += 1
                 save_data()
+                account_counter += 1
                 break
             else:
                 print("Initial balance cannot be negative.")
@@ -39,6 +43,7 @@ def create_account():
 #   Authentication checking process Function =====================================================================
 
 def authenticate():
+    global accounts
     while True:
         try:
             account_number = int(input("Enter your account number: "))
@@ -46,12 +51,14 @@ def authenticate():
                 print("- Hi", accounts[account_number]['name'], "- Welcome back to our bank service")
                 for attempt in range(1, 4):  # 3 attempts total
                     password = input(f'Enter your password (attempt {attempt}/3): ').strip()
+                    print(accounts[account_number]['password'])
+                    print(password)
                     if accounts[account_number]['password'] == password:
                         return account_number
                     else:
                         print("Incorrect password. Try again.") 
                 print("Too many incorrect attempts. Access denied.")
-                return False
+                break
             else:
                 print("Re-enter the correct account number.") 
         except ValueError:
@@ -62,21 +69,34 @@ def authenticate():
 #   Deposit Function [2. Deposit Money]===========================================================================
 
 def deposit_money():
-    account_number = authenticate()
+    #account_number = authenticate()
     while True:
         try:
-            amount = float(input("Enter amount to deposit: "))
-            if amount > 0:
-                accounts[account_number]['balance'] += amount
-                accounts[account_number]['transactions'].append("Deposited: " + str(amount))
-                print("Deposited", amount, "successfully!")
-                print("Your final balance is:", accounts[account_number]['balance'])
-                save_data()
-                break
+            account_number = int(input('Enter the account number you want to deposite : '))
+            if account_number in accounts:
+                print('The account holder name is : ', accounts[account_number]['name'] )
+                print('Name Is Correct Enter: 1 ')
+                print('You Dont want to deposite press the number is : 2')
+                choice = int(input('Enter (1 or 2): '))
+                if choice == 1:
+                    amount = float(input("Enter amount to deposit: "))
+                    if amount > 0:
+                        accounts[account_number]['balance'] += amount
+                        accounts[account_number]['transactions'].append("Deposited: " + str(amount))
+                        print("Deposited", amount, "successfully!")
+                        save_data()
+                        break
+                    else:
+                        print("Amount must be positive or greater than zero.")
+                elif choice == 2:
+                    print('Thanks for using the banking system!')
+                    break
+                else:
+                    print('Invalid choice. Please enter a number from 1 to 3.')
             else:
-                print("Amount must be positive or greater than zero.")
+                print("Name is incorrect. Please verify the account number or try again.")
         except ValueError:
-            print("Invalid amount.")
+            print("Invalid Account Number.")
 
 #   ===============================================================================================================
 
@@ -122,25 +142,26 @@ def check_balance():
 
 def transaction_history():
     account_number = authenticate()
-    while True:
-        if account_number == True:
-            print("========================================")
-            print("Transaction History for #", account_number, "[", accounts[account_number]['name'], "]")
-            print("========================================")
+    print(account_number)
 
-            transactions = accounts[account_number]['transactions']
+    print("=============================================")
+    print("Transaction History for #", account_number, "[", accounts[account_number]['name'], "]")
+    print("=============================================")
 
-            if len(transactions) == 0:
-                print("No transactions found.")
-            else:
-                count = 1
-                for txn in transactions:
-                    print(str(count) + ". " + str(txn))
-                    count += 1
-            save_data()
+    # date_Time = accounts[account_number]['created_date_and_time']
+    # print('Account created in : ', date_Time)
+    transactions = accounts[account_number]['transactions']
 
-            print("========================================\n")
-            break
+    if len(transactions) == 0:
+        print("No transactions found.")
+    else:
+        count = 1
+        for txn in transactions:
+            print(str(count) + ". " + str(txn))
+            count += 1
+    save_data()
+
+    print("========================================\n")
 
 #   ===============================================================================================================
 
@@ -281,13 +302,14 @@ def load_data():
         with open("bank_data.txt", "w") as f:
             f.write("AccountCounter: 1000\n\n")
 
-#   Save data to a text file ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#   Save data to a text file ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  
 
 def save_data():
     with open("bank_data.txt", "w") as f:
         f.write("AccountCounter: " + str(account_counter) + "\n\n")
         for acc_num, details in accounts.items():
-            f.write('Account Number: ' , str(acc_num))
+            f.write('Account Number: ' + str(acc_num) + "\n")
+            f.write('Created time is ' + str(datetime.now()) + "\n")
             f.write("Name: " + details['name'] + "\n")
             f.write("Password: " + details['password'] + "\n")
             f.write("PIN: " + str(details['pin']) + "\n")
@@ -296,82 +318,79 @@ def save_data():
             f.write("Transactions:\n")
             for txn in details['transactions']:
                 f.write("  - " + txn + "\n")
-            f.write("\n")  # blank line between accounts
+            f.write("\n")
+
 
 #   ===============================================================================================================
 
 #   Main Manager class ============================================================================================    
 
-def manager_Class():
-    print("\n=== Mini Banking System For our valuable Manager ===")
-    set_password = 123456
+def main_Manager_menu():
+    set_password = '123456'
     while True:
         try:
-            new_password = int(input('Enter the Pin : '))
+            print('=====================================================')
+            print('        Welcome To Mini Banking Manager Section      ')
+            print('=====================================================')
+            new_password = input('Enter the Pin : ').strip()
             if set_password == new_password:
-                print('Hi manager welcome to the manager login')
-                for attempt_manager in range(1, 4):  # 3 attempts total
-                    new_password = input(f'Enter your password (attempt {attempt_manager}/3): ').strip()
-                    if set_password == new_password:
-                    #   Start edit in here ==========================================
-                        print("1. Create Account")
-                        print("7. Calculate Interest")
-                        choice = input("Enter your choice (1-9): ").strip()
-
-                        if choice == '1':
-                            create_account()
-                        elif choice == '7':
-                            calculate_interest()
-
-                        return 1     #  Strat coding in here onawards
-                    else:
-                        print("Incorrect password. Try again.") 
-                print("Too many incorrect attempts. Access denied.")
-                return -1
+                print('1. Create Account')
+                print('2. Calculate Interest')
+                print('3. Exit')
+                choice = int(input("Enter your choice (1-3): "))
+                if choice == 1:
+                    create_account()
+                elif choice == 2:
+                    calculate_interest()
+                elif choice == 3:
+                    print("Thanks for using the banking system!") 
+                    break
+                else:
+                    print("Invalid choice. Please enter a number from 1 to 3.")
             else:
-                print("Re-enter the correct account number.") 
+                print("Re-enter the correct Password.") 
         except ValueError:
-            print("Invalid account number.")
-
+            print('Invalid input! Please enter a number between 1 and 3.')
 #   ===============================================================================================================    
 
 #   Main Customer class  ==========================================================================================
 
-def main_menu():
+def main_Coustomer_menu():
     while True:
-        print("\n=== Mini Banking System For our valuable coustermer ===")
+        print('======================================================')
+        print('        Welcome To Mini Banking Customer Section      ')
+        print('======================================================')
+        print('1. Deposit Money')
+        print('2. Withdraw Money')
+        print('3. Check Balance')
+        print('4. Transaction History')
+        print('5. Transfer Money')
+        print('6. Forget the password')
+        print('7. Exit')
         
-        print("2. Deposit Money")
-        print("3. Withdraw Money")
-        print("4. Check Balance")
-        print("5. Transaction History")
-        print("6. Transfer Money")
-        print("7. Calculate Interest")
-        print("8. Forget the password")
-        
-        print("10. Exit")
-        choice = input("Enter your choice (1-9): ").strip()
+        choice = int(input("Enter your choice (1-9): "))
 
-        if choice == '1':
-            create_account()
-        elif choice == '2':
-            deposit_money()
-        elif choice == '3':
-            withdraw_money()
-        elif choice == '4':
-            check_balance()
-        elif choice == '5':
-            transaction_history()
-        elif choice == '6':
-            transfer_money()
-        
-        elif choice == '8':
-            forget_password()
-        elif choice == '10':
-            print("Thanks for using the banking system!") 
-            break
-        else:
-            print("Invalid choice. Please enter a number from 1 to 9.")
+        try:
+            if choice == 1:
+                deposit_money()
+            elif choice == 2:
+                withdraw_money()
+            elif choice == 3:
+                check_balance()
+            elif choice == 4:
+                transaction_history()
+            elif choice == 5:
+                transfer_money()
+            elif choice == 6:
+                forget_password()
+            elif choice == 7:
+                print("Thanks for using the banking system!") 
+                break
+            else:
+                print("Invalid choice. Please enter a number from 1 to 9.")
+        except ValueError:
+            print('Invalid input! Please enter a number between 1 and 3.')
+
 
 #   ===============================================================================================================
 
@@ -379,20 +398,27 @@ def main_menu():
 
 def start_Function():
     while True:
-        print('========================================================')
-        print("\n=== Mini Banking System ===")
-        print('If you are the Customer press 1 ,')
-        print('If you are the Admin press 2 ,')
-        num_1 = int(input('You want to exit from this loop press 3: '))  
-        if num_1 == 1:
-            main_menu()
-        elif num_1 == 2:
-            manager_Class()
-        elif num_1 == 3:
-            print("Thanks for using the banking system!") 
-            break  # This exits the while loop (i.e., the function stops here)
-        else:
-            print("Invalid choice. Please enter a number from 1 to 3.")
+        print('=============================================')
+        print('        Welcome To Mini Banking System       ')
+        print('=============================================')
+        print('Please select your role:')
+        print(' [1] Customer')
+        print(' [2] Manager')
+        print(' [3] Exit')
+
+        try:
+            choice = int(input())
+            if choice == 1:
+                main_Coustomer_menu()
+            elif choice == 2:
+                main_Manager_menu()
+            elif choice == 3:
+                print('Thanks for using the banking system!') 
+                break  
+            else:
+                print('Invalid choice. Please enter a number from 1 to 3.')
+        except ValueError:
+            print('Invalid input! Please enter a number between 1 and 3.')
 
 #   ===============================================================================================================
 
@@ -404,6 +430,6 @@ start_Function()
 
 #   ===============================================================================================================
 
-#   Updated code 
+#   Updated code on 4.40pm__07/05/2025
 
 #   ===============================================================================================================
