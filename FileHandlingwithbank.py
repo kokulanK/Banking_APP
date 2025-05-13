@@ -165,43 +165,6 @@ def transaction_history():
 
 #   ===============================================================================================================
 
-#   Transfer Money [6. Transfer Money]=============================================================================
-
-def transfer_money():
-    from_acc = input("Enter your account number: ").strip()
-    if not from_acc.isdigit() or int(from_acc) not in accounts:
-        print("Account does not exist.")
-        return
-    from_acc = int(from_acc)
-
-    if from_acc != authenticate():
-        return
-
-    to_acc = input("Enter recipient account number: ").strip()
-    if not to_acc.isdigit() or int(to_acc) not in accounts:
-        print("Recipient account does not exist.")
-        return
-    to_acc = int(to_acc)
-
-    try:
-        amount = float(input("Enter amount to transfer: "))
-        if amount <= 0:
-            print("Amount must be positive.")
-            return
-        if amount > accounts[from_acc]['balance']:
-            print("Insufficient funds.")
-            return
-        accounts[from_acc]['balance'] -= amount
-        accounts[to_acc]['balance'] += amount
-        accounts[from_acc]['transactions'].append("Transferred " + str(amount) + " to " + str(to_acc))
-        accounts[to_acc]['transactions'].append("Received " + str(amount) + " from " + str(from_acc))
-        print("Transferred", amount, "successfully!")
-        save_data()
-    except ValueError:
-        print("Invalid amount.")
-
-#   ===============================================================================================================
-
 #   Calculate the interest [7. Calculate Interest]=================================================================
 
 def calculate_interest():
@@ -364,9 +327,8 @@ def main_Coustomer_menu():
         print('2. Withdraw Money')
         print('3. Check Balance')
         print('4. Transaction History')
-        print('5. Transfer Money')
-        print('6. Forget the password')
-        print('7. Exit')
+        print('5. Forget the password')
+        print('6. Exit')
         
         choice = int(input("Enter your choice (1-9): "))
 
@@ -380,10 +342,8 @@ def main_Coustomer_menu():
             elif choice == 4:
                 transaction_history()
             elif choice == 5:
-                transfer_money()
-            elif choice == 6:
                 forget_password()
-            elif choice == 7:
+            elif choice == 6:
                 print("Thanks for using the banking system!") 
                 break
             else:
