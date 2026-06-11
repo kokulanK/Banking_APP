@@ -224,3 +224,9 @@ These are acknowledged trade-offs of a first project, relevant to understand sco
 This project is open-source and available under the [MIT License](LICENSE).
  
 ---
+
+*Built by - Kokulan Kugathasan 
+https://github.com/kokulanK 
++94 76 752 20033
+kokulankugathasan2003@gmail.com
+BSc (Hons) Information Technology, SLIIT Sri Lanka.*
